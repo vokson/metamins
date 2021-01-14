@@ -1,0 +1,7 @@
+django
+djangorestframework
+django-cors-headers
+pytest-django
+isort
+flake8
+flake8-quotes
