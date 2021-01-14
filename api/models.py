@@ -1,5 +1,6 @@
+from decimal import Decimal
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator
 
 
 class Account(models.Model):
@@ -39,13 +40,17 @@ class Account(models.Model):
             )
         ]
     )
+
     balance = models.DecimalField(
         verbose_name='Бонусный баланс',
         help_text='Введите количество баллов',
+        default=0,
         max_length=12,
         max_digits=7,
-        decimal_places=2
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0'))]
     )
+
     created = models.DateTimeField(
         verbose_name='Дата создания',
         auto_now_add=True

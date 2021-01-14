@@ -1,3 +1,16 @@
-from django.shortcuts import render
+from rest_framework import mixins, viewsets
 
-# Create your views here.
+from .models import Account
+from .serializers import AccountSerializer
+from .filters import AccountFilter
+
+
+class AccountViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+    filterset_class = AccountFilter

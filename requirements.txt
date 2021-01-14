@@ -2,6 +2,7 @@ django
 djangorestframework
 django-cors-headers
 django-filter
+djangorestframework-simplejwt
 pytest-django
 isort
 flake8
