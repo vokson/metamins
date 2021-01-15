@@ -4,11 +4,13 @@
 
 ## Функции REST API
 Получить JWT токен с использованием username, password в формате JSON<br/>
-POST http://178.154.234.5/api/v1/token/
+POST http://178.154.234.5/api/v1/token/<br/>
+```json
 {
     "username": "XXXX",
     "password": "XXXX"
 }
+```
 
 Далее все запросы с использование JWT токена. Header: 'Bearer ..'
 
