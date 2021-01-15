@@ -8,7 +8,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = True
+DEBUG = bool(int(os.getenv('IS_DEBUG')))
 
 ALLOWED_HOSTS = ['178.154.234.5', '.localhost', '127.0.0.1', '[::1]']
 
