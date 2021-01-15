@@ -4,7 +4,7 @@ djangorestframework
 django-cors-headers
 django-filter
 djangorestframework-simplejwt
-pytest-django
+python-dotenv
 isort
 flake8
 flake8-quotes

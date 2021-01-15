@@ -1,11 +1,12 @@
 from decimal import Decimal
-from rest_framework.reverse import reverse
+
 from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .models import Account
+from .models import Account, Transaction, TransactionType
 
 User = get_user_model()
 
@@ -20,6 +21,7 @@ class ApiTest(APITestCase):
             'token': reverse('token_obtain_pair'),
             'account-create': reverse('accounts-list'),
             'account-list': reverse('accounts-list'),
+            'transaction-list': reverse('transactions-list'),
         }
 
         cls.username = 'test_user'
@@ -136,7 +138,7 @@ class ApiTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Account.objects.count(), 0)
 
-    def test_create_account_with_unautorized_user(self):
+    def test_create_account_with_unauthorized_user(self):
         response = self.client.post(self.urls['account-create'], {
             'card': '1',
             'name': 'John',
@@ -148,7 +150,7 @@ class ApiTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Account.objects.count(), 0)
 
-    def test_list_account_with_autorized_user(self):
+    def test_list_account_with_authorized_user(self):
         Account.objects.create(
             card='000000000001',
             name='John',
@@ -169,11 +171,11 @@ class ApiTest(APITestCase):
         self.assertEqual(account.get('phone'), '+79202002020')
         self.assertEqual(account.get('balance'), '100.00')
 
-    def test_list_account_with_unautorized_user(self):
+    def test_list_account_with_unauthorized_user(self):
         response = self.client.get(self.urls['account-list'], format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_get_account_by_card_with_autorized_user(self):
+    def test_get_account_by_card_with_authorized_user(self):
         Account.objects.create(
             card='000000000123',
             name='John',
@@ -205,3 +207,89 @@ class ApiTest(APITestCase):
         self.assertEqual(account.get('surname'), 'Doe')
         self.assertEqual(account.get('phone'), '+79202002020')
         self.assertEqual(account.get('balance'), '100.00')
+
+    def test_get_transactions_with_authorized_user(self):
+        card = '000000000123'
+        account = Account.objects.create(
+            card=card,
+            name='John',
+            surname='Doe',
+            phone='+79202002020',
+            balance=Decimal('100.00')
+        )
+
+        Transaction.objects.create(
+            account=account,
+            type=TransactionType.MONEY,
+            amount=Decimal('100.00')
+        )
+
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer '+str(self.token))
+        response = self.client.get(
+            self.urls['transaction-list'],
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+        transaction = response.data[0]
+        self.assertEqual(transaction.get('card'), card)
+        self.assertEqual(transaction.get('type'), TransactionType.MONEY)
+        self.assertEqual(transaction.get('amount'), '100.00')
+        self.assertEqual(transaction.get('account'), account.pk)
+
+    def test_get_transactions_by_card_with_authorized_user(self):
+        card_1 = '000000000123'
+        card_2 = '000000000456'
+
+        account_1 = Account.objects.create(
+            card=card_1,
+            name='John',
+            surname='Doe',
+            phone='+79202002020',
+            balance=Decimal('100.00')
+        )
+
+        Transaction.objects.create(
+            account=account_1,
+            type=TransactionType.MONEY,
+            amount=Decimal('100.00')
+        )
+
+        account_2 = Account.objects.create(
+            card=card_2,
+            name='Mike',
+            surname='Smith',
+            phone='+198534',
+            balance=Decimal('99.00')
+        )
+
+        Transaction.objects.create(
+            account=account_2,
+            type=TransactionType.ADD_BONUS,
+            amount=Decimal('100.00')
+        )
+
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer '+str(self.token))
+        response = self.client.get(
+            self.urls['transaction-list'],
+            data={'card': '123'},
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+        transaction = response.data[0]
+        self.assertEqual(transaction.get('card'), card_1)
+        self.assertEqual(transaction.get('type'), TransactionType.MONEY)
+        self.assertEqual(transaction.get('amount'), '100.00')
+        self.assertEqual(transaction.get('account'), account_1.pk)
+
+    def test_get_transactions_with_unauthorized_user(self):
+        response = self.client.get(
+            self.urls['transaction-list'],
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

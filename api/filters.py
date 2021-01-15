@@ -7,5 +7,5 @@ class AccountFilter(FilterSet):
     card = CharFilter(field_name='card', lookup_expr='icontains')
 
     class Meta:
-        model = Account
         fields = ('card',)
+        model = Account

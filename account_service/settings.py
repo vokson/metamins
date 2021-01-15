@@ -2,11 +2,15 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'u$44wri+53$31yy!xf_odijjek7l7_k9jc$g%lr0+3j-ju(uhl'
-DEBUG = True
+from dotenv import load_dotenv
 
-ALLOWED_HOSTS = []
+load_dotenv()
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = False
+
+ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']
 
 
 INSTALLED_APPS = [
@@ -94,9 +98,6 @@ REST_FRAMEWORK = {
 
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-
-    # 'PAGE_SIZE': 100
 }
 
 SIMPLE_JWT = {
