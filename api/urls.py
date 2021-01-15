@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
 from .views import AccountViewSet
 
 router_v1 = DefaultRouter()
-router_v1.register('accounts', AccountViewSet, 'account')
+router_v1.register('accounts', AccountViewSet, 'accounts')
 # router_v1.register('follow', FollowViewSet, 'follow')
 # router_v1.register('posts', PostViewSet, 'post')
 # router_v1.register(r'posts/(?P<post_id>\d+)/comments', CommentViewSet, 'comment')
