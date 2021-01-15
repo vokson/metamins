@@ -8,6 +8,7 @@ from .models import (DIGITS_IN_CARD_NUMBER, Account, Transaction,
 
 class AccountAdminForm(forms.ModelForm):
     card = forms.CharField(
+        label='Номер карты',
         validators=[
             RegexValidator(
                 regex=r'^[0-9]{1,' + str(DIGITS_IN_CARD_NUMBER) + r'}$',
