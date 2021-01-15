@@ -2,13 +2,17 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-from dotenv import load_dotenv
+import environ
 
-load_dotenv()
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env()
+
+DEBUG = env('DEBUG')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = bool(int(os.getenv('IS_DEBUG')))
+SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = ['178.154.234.5', '.localhost', '127.0.0.1', '[::1]']
 
@@ -56,12 +60,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'account_service.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': env.db()
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
