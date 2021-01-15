@@ -88,6 +88,30 @@ class ApiTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Account.objects.count(), 0)
 
+    def test_create_account_with_non_unique_card(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer '+str(self.token))
+        response = self.client.post(self.urls['account-create'], {
+            'card': '123',
+            'name': 'John',
+            'surname': 'Doe',
+            'phone': '+79202002020',
+            'balance': '100.00',
+        }, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Account.objects.count(), 1)
+
+        response = self.client.post(self.urls['account-create'], {
+            'card': '123',
+            'name': 'Mike',
+            'surname': 'Smith',
+            'phone': '+1894383223',
+            'balance': '99.00',
+        }, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Account.objects.count(), 1)
+
     def test_create_account_with_wrong_name(self):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer '+str(self.token))
         response = self.client.post(self.urls['account-create'], {
