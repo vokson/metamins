@@ -9,12 +9,18 @@ env = environ.Env(
 )
 environ.Env.read_env()
 
-DEBUG = env('DEBUG')
+# DEBUG = env('DEBUG')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = env('SECRET_KEY')
 
-ALLOWED_HOSTS = ['178.154.234.5', '.localhost', '127.0.0.1', '[::1]']
+DEBUG = int(os.environ.get('DEBUG', default=0))
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+
+# SECRET_KEY = env('SECRET_KEY')
+
+# ALLOWED_HOSTS = ['178.154.234.5', '.localhost', '127.0.0.1', '[::1]']
 
 
 INSTALLED_APPS = [
