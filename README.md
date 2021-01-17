@@ -8,55 +8,87 @@ git checkout feature-docker
 ```
 
 Исправить строку в файле .env.dev, заменив my.ip.add.ress на IP виртуальной машины<br/>
+```bash
 DJANGO_ALLOWED_HOSTS=my.ip.add.ress localhost 127.0.0.1 [::1]
+```
 
 Добавить права на исполнение<br/>
+```bash
 $ chmod +x app/entrypoint.sh
+```
 
 Запустить контейнеры<br/>
+```bash
 sudo docker-compose exec web python manage.py flush --no-input
+```
 
 Выполнить миграции<br/>
+```bash
 sudo docker-compose exec web python manage.py migrate
+```
 
 Добавить супер пользователя Django<br/>
+```bash
 sudo docker-compose exec web python manage.py createsuperuser
+```
 
 Сервис работает здесь<br/>
+```bash
 Ваш IP:8000/admin
+```
 
 Остановить все контейнеры<br/>
+```bash
 sudo docker-compose down -v
+```
 
 ## DOCKER-COMPOSE PRODUCTION MODE
 
 Клонировать репозиторий<br/>
+```bash
 git clone https://github.com/vokson/metamins<br/>
 git checkout feature-docker
+```
 
 Исправить строку в файле .env.prod, заменив my.ip.add.ress на IP виртуальной машины<br/>
+```bash
 DJANGO_ALLOWED_HOSTS=my.ip.add.ress localhost 127.0.0.1 [::1]
+```
 
 Добавить права на исполнение<br/>
+```bash
 sudo chmod +x app/entrypoint.prod.sh
+```
 
 Запустить контейнеры<br/>
+```bash
 sudo docker-compose -f docker-compose.prod.yml up -d --build
+```
 
 Выполнить миграции<br/>
+```bash
 sudo docker-compose -f docker-compose.prod.yml exec web python manage.py migrate --noinput
+```
 
 Собрать статику<br/>
+```bash
 sudo docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear
+```
 
 Добавить супер пользователя Django<br/>
+```bash
 sudo docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
+```
 
 Сервис работает здесь<br/>
+```bash
 Ваш IP/admin
+```
 
 Остановить все контейнеры<br/>
+```bash
 sudo docker-compose -f docker-compose.prod.yml down -v
+```
 
 ## Функции REST API
 Получить JWT токен с использованием username, password в формате JSON<br/>
