@@ -4,6 +4,7 @@
 Клонировать репозиторий<br/>
 ```bash
 git clone https://github.com/vokson/metamins
+cd ./metamins
 git checkout feature-docker
 ```
 
@@ -42,6 +43,7 @@ sudo docker-compose down -v
 Клонировать репозиторий<br/>
 ```bash
 git clone https://github.com/vokson/metamins
+cd ./metamins
 git checkout feature-docker
 ```
 
