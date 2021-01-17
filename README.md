@@ -2,8 +2,10 @@
 
 ## DOCKER-COMPOSE DEVELOPMENT MODE
 Клонировать репозиторий<br/>
-git clone https://github.com/vokson/metamins<br/>
+```bash
+git clone https://github.com/vokson/metamins
 git checkout feature-docker
+```
 
 Исправить строку в файле .env.dev, заменив my.ip.add.ress на IP виртуальной машины<br/>
 DJANGO_ALLOWED_HOSTS=my.ip.add.ress localhost 127.0.0.1 [::1]
