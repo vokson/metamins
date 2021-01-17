@@ -1,6 +1,60 @@
 # Metamins Test Task 1
-Сервис запущен и работает по адресу http://178.154.234.5/admin/ с использование PostgreSQL
-Зайти в admin панель можно с помощью данных, отправленных в телеграмме
+
+## DOCKER-COMPOSE DEVELOPMENT MODE
+Клонировать репозиторий<br/>
+git clone https://github.com/vokson/metamins<br/>
+git checkout feature-docker
+
+Исправить строку в файле .env.dev, заменив my.ip.add.ress на IP виртуальной машины<br/>
+DJANGO_ALLOWED_HOSTS=my.ip.add.ress localhost 127.0.0.1 [::1]
+
+Добавить права на исполнение<br/>
+$ chmod +x app/entrypoint.sh
+
+Запустить контейнеры<br/>
+sudo docker-compose exec web python manage.py flush --no-input
+
+Выполнить миграции<br/>
+sudo docker-compose exec web python manage.py migrate
+
+Добавить супер пользователя Django<br/>
+sudo docker-compose exec web python manage.py createsuperuser
+
+Сервис работает здесь<br/>
+Ваш IP:8000/admin
+
+Остановить все контейнеры<br/>
+sudo docker-compose down -v
+
+## DOCKER-COMPOSE PRODUCTION MODE
+
+Клонировать репозиторий<br/>
+git clone https://github.com/vokson/metamins<br/>
+git checkout feature-docker
+
+Исправить строку в файле .env.prod, заменив my.ip.add.ress на IP виртуальной машины<br/>
+DJANGO_ALLOWED_HOSTS=my.ip.add.ress localhost 127.0.0.1 [::1]
+
+Добавить права на исполнение<br/>
+sudo chmod +x app/entrypoint.prod.sh
+
+Запустить контейнеры<br/>
+sudo docker-compose -f docker-compose.prod.yml up -d --build
+
+Выполнить миграции<br/>
+sudo docker-compose -f docker-compose.prod.yml exec web python manage.py migrate --noinput
+
+Собрать статику<br/>
+sudo docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear
+
+Добавить супер пользователя Django<br/>
+sudo docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
+
+Сервис работает здесь<br/>
+Ваш IP/admin
+
+Остановить все контейнеры<br/>
+sudo docker-compose -f docker-compose.prod.yml down -v
 
 ## Функции REST API
 Получить JWT токен с использованием username, password в формате JSON<br/>
