@@ -19,11 +19,12 @@ $ chmod +x app/entrypoint.sh
 
 Запустить контейнеры<br/>
 ```bash
-sudo docker-compose exec web python manage.py flush --no-input
+sudo docker-compose up -d --build
 ```
 
 Выполнить миграции<br/>
 ```bash
+sudo docker-compose exec web python manage.py flush --no-input
 sudo docker-compose exec web python manage.py migrate
 ```
 
